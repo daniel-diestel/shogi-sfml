@@ -7,11 +7,12 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(SFML 3 REQUIRED COMPONENTS Graphics Window System Audio)
 
 add_library(shogi_core
-    src/core/Piece.cpp
+    core/Piece.cpp
+    core/Board.cpp
 )
 
 target_include_directories(shogi_core PUBLIC
-    ${CMAKE_CURRENT_SOURCE_DIR}/core/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/core/include/core
 )
 
 add_executable(shogi src/main.cpp)
