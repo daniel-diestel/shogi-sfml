@@ -6,10 +6,6 @@ Board::Board() {
     }
 }
 
-bool Board::isInside(int x, int y) const {
-    return x >= 0 && x < 9 && y >= 0 && y < 9;
-}
-
 Piece* Board::getPiece(int x, int y) const {
     if(!isInside(x, y)) {
         return nullptr;
@@ -29,4 +25,9 @@ void Board::removePiece(int x, int y) {
         return;
     }
     m_board[y][x] = nullptr;
+}
+
+bool Board::isInside(int x, int y) const
+{
+    return x >= 0 && x < 9 && y >= 0 && y < 9;
 }
