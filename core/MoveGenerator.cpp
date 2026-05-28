@@ -71,7 +71,48 @@ std::vector<Move> MoveGenerator::generateMoves(const Board &board, Player player
             }
         }
     }
+
+    generateDropMoves(board, player, moves);
+
     return moves;
+}
+
+bool MoveGenerator::isSquareAttacked(const Board &board, int targetX, int targetY, Player attacker)
+{
+    std::vector<Move> enemyMoves = generateMoves(board, attacker);
+
+    for (const Move &move : enemyMoves)
+    {
+        if (!move.isDrop() && move.toX() == targetX && move.toY() == targetY)
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+std::vector<Move> MoveGenerator::getLegalMoves(const Board &board, Player player)
+{
+    std::vector<Move> pseudoLegalMoves = generateMoves(board, player);
+    std::vector<Move> legalMoves;
+
+    Player enemy = (player == Player::Black) ? Player::White : Player::Black;
+
+    for (const Move &move : pseudoLegalMoves)
+    {
+        Board tempBoard = board;
+
+        tempBoard.makeMove(move);
+
+        auto [kingX, kingY] = tempBoard.findKing(player);
+
+        if (!isSquareAttacked(tempBoard, kingX, kingY, enemy))
+        {
+            legalMoves.push_back(move);
+        }
+    }
+
+    return legalMoves;
 }
 
 void MoveGenerator::generatePawnMoves(const Board &board, int x, int y, Piece *piece, std::vector<Move> &moves)
@@ -256,7 +297,8 @@ void MoveGenerator::generateRookMoves(const Board &board, int x, int y, Piece *p
 
     if (piece->isPromoted())
     {
-        for (const Offset &move : possibleExtraMovesIfPromoted) {
+        for (const Offset &move : possibleExtraMovesIfPromoted)
+        {
             int targetX = x + move.dx;
             int targetY = y + move.dy;
 
@@ -367,5 +409,63 @@ void MoveGenerator::generateBishopMoves(const Board &board, int x, int y, Piece 
         } while (true);
 
         forward = 1;
+    }
+}
+
+void MoveGenerator::generateDropMoves(const Board &board, Player player, std::vector<Move> &moves)
+{
+    const std::vector<Piece *> &hand = board.getHand(player);
+
+    if (hand.empty())
+        return;
+
+    std::vector<PieceType> checkedTypes;
+
+    for (Piece *piece : hand)
+    {
+        if (std::find(checkedTypes.begin(), checkedTypes.end(), piece->type()) != checkedTypes.end())
+        {
+            continue;
+        }
+
+        checkedTypes.push_back(piece->type());
+
+        for (int x = 0; x < 9; x++)
+        {
+            if (piece->type() == PieceType::Pawn)
+            {
+                bool hasPawn = false;
+                for (int y = 0; y < 9; y++)
+                {
+                    Piece *p = board.getPiece(x, y);
+                    if (p != nullptr && p->owner() == player && p->type() == PieceType::Pawn && !p->isPromoted())
+                    {
+                        hasPawn = true;
+                        break;
+                    }
+                }
+                if (hasPawn)
+                    continue;
+            }
+
+            for (int y = 0; y < 9; y++)
+            {
+                if (board.getPiece(x, y) != nullptr)
+                    continue;
+
+                if (piece->type() == PieceType::Pawn || piece->type() == PieceType::Lance)
+                {
+                    if ((player == Player::Black && y == 0) || (player == Player::White && y == 8))
+                        continue;
+                }
+                if (piece->type() == PieceType::Knight)
+                {
+                    if ((player == Player::Black && y <= 1) || (player == Player::White && y >= 7))
+                        continue;
+                }
+
+                moves.emplace_back(x, y, piece);
+            }
+        }
     }
 }

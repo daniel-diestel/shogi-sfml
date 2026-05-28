@@ -2,7 +2,8 @@
 
 #include "Types.hpp"
 
-class Piece {
+class Piece
+{
 public:
     Piece(PieceType type, Player owner, bool promoted = false);
 
@@ -13,6 +14,7 @@ public:
     bool canPromote() const;
     void promote();
     void demote();
+    void setOwner(Player newOwner);
 
 private:
     PieceType m_type;

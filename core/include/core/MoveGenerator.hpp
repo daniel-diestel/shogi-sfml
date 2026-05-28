@@ -11,8 +11,12 @@ class MoveGenerator
 public:
     static std::vector<Move> generateMoves(const Board &board, Player player);
 
+    static bool isSquareAttacked(const Board &board, int targetX, int targetY, Player attacker);
+
+    static std::vector<Move> getLegalMoves(const Board &board, Player player);
+
 private:
-    static void generatePawnMoves(const Board &board, int x, int y, Piece* piece, std::vector<Move> &moves);
+    static void generatePawnMoves(const Board &board, int x, int y, Piece *piece, std::vector<Move> &moves);
     static void generateKingMoves(const Board &board, int x, int y, Piece *piece, std::vector<Move> &moves);
     static void generateGoldMoves(const Board &board, int x, int y, Piece *piece, std::vector<Move> &moves);
     static void generateSilverMoves(const Board &board, int x, int y, Piece *piece, std::vector<Move> &moves);
@@ -20,4 +24,5 @@ private:
     static void generateLanceMoves(const Board &board, int x, int y, Piece *piece, std::vector<Move> &moves);
     static void generateRookMoves(const Board &board, int x, int y, Piece *piece, std::vector<Move> &moves);
     static void generateBishopMoves(const Board &board, int x, int y, Piece *piece, std::vector<Move> &moves);
+    static void generateDropMoves(const Board &board, Player player, std::vector<Move> &moves);
 };
