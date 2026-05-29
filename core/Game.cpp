@@ -1,11 +1,16 @@
 #include "Game.hpp"
 
-const Board &Game::getBoard()
+Game::Game()
+{
+    m_board.setupBoard();
+}
+
+const Board &Game::getBoard() const
 {
     return m_board;
 }
 
-Player Game::getCurrentPlayer()
+Player Game::getCurrentPlayer() const
 {
     return m_currentPlayer;
 }

@@ -9,9 +9,10 @@ class Game
 {
 
 public:
-    const Board &getBoard();
+    Game();
+    const Board &getBoard() const;
 
-    Player getCurrentPlayer();
+    Player getCurrentPlayer() const;
 
     void handleInput(int x, int y);
 

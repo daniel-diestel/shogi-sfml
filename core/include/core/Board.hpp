@@ -16,6 +16,8 @@ public:
 
     Board &operator=(const Board &other);
 
+    void setupBoard();
+
     std::pair<int, int> findKing(Player player) const;
 
     Piece *getPiece(int x, int y) const;

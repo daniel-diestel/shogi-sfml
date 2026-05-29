@@ -12,18 +12,24 @@ add_library(shogi_core
     core/Move.cpp
     core/MoveGenerator.cpp
     core/Game.cpp
+    core/Renderer.cpp
 )
 
 target_include_directories(shogi_core PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/core/include/core
 )
 
-add_executable(shogi src/main.cpp)
+add_executable(shogi 
+    src/main.cpp
+)
 
-target_link_libraries(shogi PRIVATE
-    shogi_core
+target_link_libraries(shogi_core PUBLIC
     SFML::Graphics
     SFML::Window
     SFML::System
     SFML::Audio
+)
+
+target_link_libraries(shogi PRIVATE
+    shogi_core
 )
