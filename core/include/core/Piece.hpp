@@ -11,15 +11,14 @@ public:
     Player owner() const;
     bool isPromoted() const;
 
-    bool canPromote() const;
     void promote();
     void demote();
-    void setOwner(Player newOwner);
+    bool canPromote();
 
 private:
     PieceType m_type;
     Player m_owner;
     bool m_promoted;
 
-    bool isPiecePromotable() const;
+    bool isPiecePromotable();
 };

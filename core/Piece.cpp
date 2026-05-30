@@ -1,7 +1,11 @@
 #include "Piece.hpp"
 
 Piece::Piece(PieceType type, Player owner, bool promoted)
-    : m_type(type), m_owner(owner), m_promoted(promoted) {}
+{
+    m_type = type;
+    m_owner = owner;
+    m_promoted = promoted;
+}
 
 PieceType Piece::type() const
 {
@@ -18,16 +22,6 @@ bool Piece::isPromoted() const
     return m_promoted;
 }
 
-bool Piece::isPiecePromotable() const
-{
-    return m_type != PieceType::King && m_type != PieceType::Gold;
-}
-
-bool Piece::canPromote() const
-{
-    return isPiecePromotable() && !m_promoted;
-}
-
 void Piece::promote()
 {
     if (canPromote())
@@ -41,7 +35,26 @@ void Piece::demote()
     m_promoted = false;
 }
 
-void Piece::setOwner(Player newOwner)
+bool Piece::canPromote()
 {
-    m_owner = newOwner;
+    if (isPiecePromotable() && !m_promoted)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+bool Piece::isPiecePromotable()
+{
+    if (m_type == PieceType::King || m_type == PieceType::Jewel || m_type == PieceType::Gold)
+    {
+        return false;
+    }
+    else
+    {
+        return true;
+    }
 }

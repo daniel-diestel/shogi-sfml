@@ -1,26 +1,19 @@
-#pragma once
-
-enum class Player
+enum Player
 {
-    Black,
-    White
+    Sente, // First
+    Gote   // Second
 };
 
-enum class PieceType
+enum PieceType
 {
     King,
+    Jewel,
+    Rook,
+    Bishop,
     Gold,
     Silver,
     Knight,
     Lance,
     Pawn,
-    Bishop,
-    Rook
-};
-
-enum class MoveType
-{
-    Normal,
-    Promotion,
-    Drop
+    Empty
 };
