@@ -2,7 +2,7 @@
 
 int main()
 {
-    sf::RenderWindow window(sf::VideoMode({1200, 1000}), "Shogi Engine");
+    sf::RenderWindow window(sf::VideoMode({900, 800}), "Shogi");
 
     while (window.isOpen())
     {
@@ -13,7 +13,7 @@ int main()
                 window.close();
             }
 
-        window.clear(sf::Color(50, 50, 50));
+        window.clear(sf::Color::Black);
 
         window.display();
         }

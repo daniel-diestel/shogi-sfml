@@ -5,7 +5,7 @@
 class Piece
 {
 public:
-    Piece(PieceType type, Player owner, bool promoted = false);
+    Piece(PieceType type = Empty, Player owner = None, bool promoted = false);
 
     PieceType type() const;
     Player owner() const;

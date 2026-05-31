@@ -9,6 +9,8 @@ find_package(SFML 3 REQUIRED COMPONENTS Graphics Window System Audio)
 add_library(shogi_core
     core/Piece.cpp
     core/Board.cpp
+    core/Move.cpp
+    core/MoveGenerator.cpp
 )
 
 target_include_directories(shogi_core PUBLIC

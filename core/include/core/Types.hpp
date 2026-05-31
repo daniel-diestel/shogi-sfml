@@ -1,7 +1,8 @@
 enum Player
 {
     Sente, // First
-    Gote   // Second
+    Gote,   // Second
+    None
 };
 
 enum PieceType
