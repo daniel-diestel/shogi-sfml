@@ -40,6 +40,18 @@ void Board::removePiece(int x, int y)
     m_board[y][x] = Piece();
 }
 
+std::vector<Piece> Board::getHand(Player player) const
+{
+    if (player == Player::Sente)
+    {
+        return m_hand_sente;
+    }
+    else
+    {
+        return m_hand_gote;
+    }
+}
+
 void Board::addToHand(int x, int y)
 {
     if (!isInside(x, y))
@@ -63,7 +75,72 @@ void Board::addToHand(int x, int y)
     }
 }
 
-void Board::initializeBoard()
+void Board::removeFromHand(Piece piece, Player player)
+{
+    if (player == Player::Sente)
+    {
+        auto iterator = std::find(m_hand_sente.begin(), m_hand_sente.end(), piece);
+
+        if (iterator != m_hand_sente.end())
+        {
+            m_hand_sente.erase(iterator);
+        }
+    }
+    else {
+        auto iterator = std::find(m_hand_gote.begin(), m_hand_gote.end(), piece);
+
+        if (iterator != m_hand_gote.end())
+        {
+            m_hand_gote.erase(iterator);
+        }
+    }
+}
+
+Coordinates Board::findKing(Player player)
+{
+    Coordinates kingCoordinates = {-1, -1};
+
+    for (int y = 0; y < 9; y++)
+    {
+        for (int x = 0; x < 9; x++)
+        {
+            Piece currentPiece = getPiece(x, y);
+
+            if ((currentPiece.type() == PieceType::King || currentPiece.type() == PieceType::Jewel) && currentPiece.owner() == player)
+            {
+                kingCoordinates.x = x;
+                kingCoordinates.y = y;
+
+                return kingCoordinates;
+            }
+        }
+    }
+
+    return kingCoordinates;
+}
+
+void Board::makeMove(Move &move) {
+    Piece movingPiece = move.movedPiece();
+
+    if(move.isDrop()) {
+        removeFromHand(movingPiece, movingPiece.owner());
+        placePiece(move.toX(), move.toY(), movingPiece);
+    }
+    else {  
+        addToHand(move.toX(), move.toY());
+
+        removePiece(move.fromX(), move.fromY());
+
+        if (move.doesPromote())
+        {
+            movingPiece.promote();
+        }
+
+        placePiece(move.toX(), move.toY(), movingPiece);
+    }
+}
+
+    void Board::initializeBoard()
 {
     m_board = {{
         {Piece(PieceType::Lance, Player::Gote), Piece(PieceType::Knight, Player::Gote), Piece(PieceType::Silver, Player::Gote), Piece(PieceType::Gold, Player::Gote), Piece(PieceType::King, Player::Gote), Piece(PieceType::Gold, Player::Gote), Piece(PieceType::Silver, Player::Gote), Piece(PieceType::Knight, Player::Gote), Piece(PieceType::Lance, Player::Gote)},

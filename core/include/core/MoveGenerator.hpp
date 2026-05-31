@@ -6,7 +6,7 @@
 
 class MoveGenerator {
     public:
-        static std::vector<Move> generateMoves(const Board &board, Player player);
+        static std::vector<Move> generateLegalMoves(const Board &board, Player player);
 
     private:
         static void generatePawnMoves(const Board &board, int x, int y, Piece piece, std::vector<Move> &moves);
@@ -17,4 +17,9 @@ class MoveGenerator {
         static void generateLanceMoves(const Board &board, int x, int y, Piece piece, std::vector<Move> &moves);
         static void generateRookMoves(const Board &board, int x, int y, Piece piece, std::vector<Move> &moves);
         static void generateBishopMoves(const Board &board, int x, int y, Piece piece, std::vector<Move> &moves);
+        static void generateDropMoves(const Board &board, Player player, std::vector<Move> &moves);
+
+        static std::vector<Move> generateMoves(const Board &board, Player player);
+
+        static bool isKingAttacked(const Board &board, Coordinates kingCoordinates, Player enemy);
 };

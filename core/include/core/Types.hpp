@@ -18,3 +18,15 @@ enum PieceType
     Pawn,
     Empty
 };
+
+struct Offset
+{
+    int dx;
+    int dy;
+};
+
+struct Coordinates
+{
+    int x;
+    int y;
+};

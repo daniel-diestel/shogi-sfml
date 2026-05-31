@@ -1,11 +1,5 @@
 #include "MoveGenerator.hpp"
 
-struct Offset
-{
-    int dx;
-    int dy;
-};
-
 std::vector<Move> MoveGenerator::generateMoves(const Board &board, Player player)
 {
     std::vector<Move> moves;
@@ -15,7 +9,7 @@ std::vector<Move> MoveGenerator::generateMoves(const Board &board, Player player
         for (int x = 0; x < 9; x++)
         {
             Piece piece = board.getPiece(x, y);
-            if (piece.type() == PieceType::Empty || piece.owner() == Player::None)
+            if (piece.type() == PieceType::Empty || piece.owner() == Player::None || piece.owner() != player)
             {
                 continue;
             }
@@ -74,7 +68,47 @@ std::vector<Move> MoveGenerator::generateMoves(const Board &board, Player player
         }
     }
 
+    generateDropMoves(board, player, moves);
+
     return moves;
+}
+
+std::vector<Move> MoveGenerator::generateLegalMoves(const Board &board, Player player)
+{
+    std::vector<Move> myMoves = generateMoves(board, player);
+    std::vector<Move> myLegalMoves;
+
+    Player enemy = (player == Player::Sente) ? Player::Gote : Player::Sente;
+
+    for (Move &move : myMoves)
+    {
+        Board testingBoard = board;
+
+        testingBoard.makeMove(move);
+
+        Coordinates kingCoordiantes = testingBoard.findKing(player);
+
+        if (!isKingAttacked(testingBoard, kingCoordiantes, enemy))
+        {
+            myLegalMoves.push_back(move);
+        }
+    }
+
+    return myLegalMoves;
+}
+
+bool MoveGenerator::isKingAttacked(const Board &board, Coordinates kingCoordinates, Player enemy)
+{
+    std::vector<Move> enemyMoves = generateMoves(board, enemy);
+
+    for (Move &move : enemyMoves)
+    {
+        if (move.toX() == kingCoordinates.x && move.toY() == kingCoordinates.y)
+        {
+            return true;
+        }
+    }
+    return false;
 }
 
 void MoveGenerator::generatePawnMoves(const Board &board, int x, int y, Piece piece, std::vector<Move> &moves)
@@ -416,9 +450,81 @@ void MoveGenerator::generateBishopMoves(const Board &board, int x, int y, Piece 
                 break;
             }
 
-                forward++;
+            forward++;
         } while (true);
 
         forward = 1;
+    }
+}
+
+void MoveGenerator::generateDropMoves(const Board &board, Player player, std::vector<Move> &moves)
+{
+    std::vector<Piece> myHand = board.getHand(player);
+
+    if (myHand.empty())
+    {
+        return;
+    }
+
+    std::vector<PieceType> checkedTypes;
+
+    for (Piece piece : myHand)
+    {
+        if (std::find(checkedTypes.begin(), checkedTypes.end(), piece.type()) != checkedTypes.end())
+        {
+            continue;
+        }
+
+        checkedTypes.push_back(piece.type());
+
+        for (int x = 0; x < 9; x++)
+        {
+            bool isPawnInColumn = false;
+
+            if (piece.type() == PieceType::Pawn)
+            {
+
+                for (int y = 0; y < 9; y++)
+                {
+                    Piece piece = board.getPiece(x, y);
+
+                    if (piece.owner() == player && piece.type() == PieceType::Pawn && !piece.isPromoted())
+                    {
+                        isPawnInColumn = true;
+                        break;
+                    }
+                }
+            }
+
+            if (isPawnInColumn)
+            {
+                continue;
+            }
+
+            for (int y = 0; y < 9; y++)
+            {
+                if (board.getPiece(x, y).type() != PieceType::Empty)
+                {
+                    continue;
+                }
+
+                if (piece.type() == PieceType::Pawn || piece.type() == PieceType::Lance)
+                {
+                    if ((player == Player::Sente && y == 0) || (player == Player::Gote && y == 8))
+                    {
+                        continue;
+                    }
+                }
+                if (piece.type() == PieceType::Knight)
+                {
+                    if ((player == Player::Sente && y <= 1) || (player == Player::Gote && y >= 7))
+                    {
+                        continue;
+                    }
+                }
+
+                moves.emplace_back(x, y, piece);
+            }
+        }
     }
 }

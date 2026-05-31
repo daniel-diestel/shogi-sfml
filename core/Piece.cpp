@@ -58,3 +58,7 @@ bool Piece::isPiecePromotable()
         return true;
     }
 }
+
+void Piece::setNewOwner(Player newOwner) {
+    m_owner = newOwner;
+}

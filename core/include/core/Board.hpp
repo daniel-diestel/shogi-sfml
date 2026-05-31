@@ -3,6 +3,7 @@
 #include <array>
 #include <vector>
 #include "Piece.hpp"
+#include "Move.hpp"
 
 class Board
 {
@@ -16,7 +17,13 @@ public:
     void placePiece(int x, int y, Piece piece);
     void removePiece(int x, int y);
 
+    std::vector<Piece> getHand(Player player) const;
     void addToHand(int x, int y);
+    void removeFromHand(Piece piece, Player player);
+
+    Coordinates findKing(Player player);
+
+    void makeMove(Move &move);
 
 private:
     // Board coordinates:

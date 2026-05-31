@@ -14,6 +14,7 @@ public:
     void promote();
     void demote();
     bool canPromote();
+    void setNewOwner(Player newOwner);
 
 private:
     PieceType m_type;
