@@ -90,7 +90,7 @@ void MoveGenerator::generatePawnMoves(const Board &board, int x, int y, Piece pi
 
     Piece targetPiece = board.getPiece(targetX, targetY);
 
-    if (targetPiece.type() != PieceType::Empty || targetPiece.owner() == piece.owner())
+    if (targetPiece.type() != PieceType::Empty || targetPiece.owner() == piece.owner() || targetPiece.owner() == Player::None)
     {
         return;
     }
@@ -125,7 +125,7 @@ void MoveGenerator::generateKingMoves(const Board &board, int x, int y, Piece pi
 
         Piece targetPiece = board.getPiece(targetX, targetY);
 
-        if (targetPiece.type() != PieceType::Empty || targetPiece.owner() == piece.owner())
+        if (targetPiece.type() != PieceType::Empty || targetPiece.owner() == piece.owner() || targetPiece.owner() == Player::None)
         {
             continue;
         }
@@ -153,7 +153,7 @@ void MoveGenerator::generateGoldMoves(const Board &board, int x, int y, Piece pi
 
         Piece targetPiece = board.getPiece(targetX, targetY);
 
-        if (targetPiece.type() != PieceType::Empty || targetPiece.owner() == piece.owner())
+        if (targetPiece.type() != PieceType::Empty || targetPiece.owner() == piece.owner() || targetPiece.owner() == Player::None)
         {
             continue;
         }
@@ -181,7 +181,7 @@ void MoveGenerator::generateSilverMoves(const Board &board, int x, int y, Piece 
 
         Piece targetPiece = board.getPiece(targetX, targetY);
 
-        if (targetPiece.type() != PieceType::Empty || targetPiece.owner() == piece.owner())
+        if (targetPiece.type() != PieceType::Empty || targetPiece.owner() == piece.owner() || targetPiece.owner() == Player::None)
         {
             continue;
         }
@@ -218,7 +218,7 @@ void MoveGenerator::generateKnightMoves(const Board &board, int x, int y, Piece 
 
         Piece targetPiece = board.getPiece(targetX, targetY);
 
-        if (targetPiece.type() != PieceType::Empty || targetPiece.owner() == piece.owner())
+        if (targetPiece.type() != PieceType::Empty || targetPiece.owner() == piece.owner() || targetPiece.owner() == Player::None)
         {
             continue;
         }
@@ -255,7 +255,7 @@ void MoveGenerator::generateLanceMoves(const Board &board, int x, int y, Piece p
 
         Piece targetPiece = board.getPiece(targetX, targetY);
 
-        if (targetPiece.type() != PieceType::Empty || targetPiece.owner() == piece.owner())
+        if (targetPiece.type() != PieceType::Empty || targetPiece.owner() == piece.owner() || targetPiece.owner() == Player::None)
         {
             break;
         }
@@ -271,6 +271,11 @@ void MoveGenerator::generateLanceMoves(const Board &board, int x, int y, Piece p
         if (canPromote)
         {
             moves.emplace_back(x, y, targetX, targetY, piece, true);
+        }
+
+        if (targetPiece.type() != PieceType::Empty)
+        {
+            break;
         }
 
         forward++;
@@ -298,7 +303,7 @@ void MoveGenerator::generateRookMoves(const Board &board, int x, int y, Piece pi
 
             Piece targetPiece = board.getPiece(targetX, targetY);
 
-            if (targetPiece.type() != PieceType::Empty || targetPiece.owner() == piece.owner())
+            if (targetPiece.type() != PieceType::Empty || targetPiece.owner() == piece.owner() || targetPiece.owner() == Player::None)
             {
                 continue;
             }
@@ -320,7 +325,7 @@ void MoveGenerator::generateRookMoves(const Board &board, int x, int y, Piece pi
             }
             Piece targetPiece = board.getPiece(targetX, targetY);
 
-            if (targetPiece.type() != PieceType::Empty || targetPiece.owner() == piece.owner())
+            if (targetPiece.type() != PieceType::Empty || targetPiece.owner() == piece.owner() || targetPiece.owner() == Player::None)
             {
                 break;
             }
@@ -334,6 +339,11 @@ void MoveGenerator::generateRookMoves(const Board &board, int x, int y, Piece pi
             if (canPromote)
             {
                 moves.emplace_back(x, y, targetX, targetY, piece, true);
+            }
+
+            if (targetPiece.type() != PieceType::Empty)
+            {
+                break;
             }
 
             forward++;
@@ -362,7 +372,7 @@ void MoveGenerator::generateBishopMoves(const Board &board, int x, int y, Piece 
 
             Piece targetPiece = board.getPiece(targetX, targetY);
 
-            if (targetPiece.type() != PieceType::Empty || targetPiece.owner() == piece.owner())
+            if (targetPiece.type() != PieceType::Empty || targetPiece.owner() == piece.owner() || targetPiece.owner() == Player::None)
             {
                 continue;
             }
@@ -385,7 +395,7 @@ void MoveGenerator::generateBishopMoves(const Board &board, int x, int y, Piece 
 
             Piece targetPiece = board.getPiece(targetX, targetY);
 
-            if (targetPiece.type() != PieceType::Empty || targetPiece.owner() == piece.owner())
+            if (targetPiece.type() != PieceType::Empty || targetPiece.owner() == piece.owner() || targetPiece.owner() == Player::None)
             {
                 break;
             }
@@ -401,7 +411,12 @@ void MoveGenerator::generateBishopMoves(const Board &board, int x, int y, Piece 
                 moves.emplace_back(x, y, targetX, targetY, piece, true);
             }
 
-            forward++;
+            if (targetPiece.type() != PieceType::Empty)
+            {
+                break;
+            }
+
+                forward++;
         } while (true);
 
         forward = 1;
