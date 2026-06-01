@@ -63,6 +63,8 @@ std::vector<Move> MoveGenerator::generateMoves(const Board &board, Player player
                 case PieceType::Bishop:
                     generateBishopMoves(board, x, y, piece, moves);
                     break;
+                default:
+                    break;
                 }
             }
         }

@@ -16,6 +16,11 @@ public:
     bool canPromote();
     void setNewOwner(Player newOwner);
 
+    bool operator==(const Piece &other) const
+    {
+        return this->m_type == other.m_type;
+    }
+
 private:
     PieceType m_type;
     Player m_owner;
