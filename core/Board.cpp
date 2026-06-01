@@ -71,7 +71,7 @@ void Board::addToHand(int x, int y)
     }
     else
     {
-        m_hand_sente.push_back(Piece(captured.type(), Player::Gote));
+        m_hand_gote.push_back(Piece(captured.type(), Player::Gote));
     }
 }
 
@@ -86,7 +86,8 @@ void Board::removeFromHand(Piece piece, Player player)
             m_hand_sente.erase(iterator);
         }
     }
-    else {
+    else
+    {
         auto iterator = std::find(m_hand_gote.begin(), m_hand_gote.end(), piece);
 
         if (iterator != m_hand_gote.end())
@@ -119,14 +120,17 @@ Coordinates Board::findKing(Player player)
     return kingCoordinates;
 }
 
-void Board::makeMove(Move &move) {
+void Board::makeMove(Move &move)
+{
     Piece movingPiece = move.movedPiece();
 
-    if(move.isDrop()) {
+    if (move.isDrop())
+    {
         removeFromHand(movingPiece, movingPiece.owner());
         placePiece(move.toX(), move.toY(), movingPiece);
     }
-    else {  
+    else
+    {
         addToHand(move.toX(), move.toY());
 
         removePiece(move.fromX(), move.fromY());
@@ -140,7 +144,7 @@ void Board::makeMove(Move &move) {
     }
 }
 
-    void Board::initializeBoard()
+void Board::initializeBoard()
 {
     m_board = {{
         {Piece(PieceType::Lance, Player::Gote), Piece(PieceType::Knight, Player::Gote), Piece(PieceType::Silver, Player::Gote), Piece(PieceType::Gold, Player::Gote), Piece(PieceType::King, Player::Gote), Piece(PieceType::Gold, Player::Gote), Piece(PieceType::Silver, Player::Gote), Piece(PieceType::Knight, Player::Gote), Piece(PieceType::Lance, Player::Gote)},

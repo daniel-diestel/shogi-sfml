@@ -11,6 +11,8 @@ add_library(shogi_core
     core/Board.cpp
     core/Move.cpp
     core/MoveGenerator.cpp
+    core/Game.cpp
+    core/Renderer.cpp
 )
 
 target_include_directories(shogi_core PUBLIC
