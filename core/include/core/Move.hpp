@@ -4,8 +4,9 @@
 
 class Move {
     public:
-        Move(int fromX, int fromY, int toX, int toY, Piece piece, bool promotes = false);
+        Move();
         Move(int toX, int toY, Piece piece);
+        Move(int fromX, int fromY, int toX, int toY, Piece piece, bool promotes = false);
 
         int fromX() const;
         int fromY() const;

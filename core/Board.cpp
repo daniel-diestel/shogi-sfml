@@ -154,7 +154,7 @@ void Board::initializeBoard()
         {Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece()},
         {Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece(), Piece()},
         {Piece(PieceType::Pawn, Player::Sente), Piece(PieceType::Pawn, Player::Sente), Piece(PieceType::Pawn, Player::Sente), Piece(PieceType::Pawn, Player::Sente), Piece(PieceType::Pawn, Player::Sente), Piece(PieceType::Pawn, Player::Sente), Piece(PieceType::Pawn, Player::Sente), Piece(PieceType::Pawn, Player::Sente), Piece(PieceType::Pawn, Player::Sente)},
-        {Piece(), Piece(PieceType::Rook, Player::Sente), Piece(), Piece(), Piece(), Piece(), Piece(), Piece(PieceType::Bishop, Player::Sente), Piece()},
+        {Piece(), Piece(PieceType::Bishop, Player::Sente), Piece(), Piece(), Piece(), Piece(), Piece(), Piece(PieceType::Rook, Player::Sente), Piece()},
         {Piece(PieceType::Lance, Player::Sente), Piece(PieceType::Knight, Player::Sente), Piece(PieceType::Silver, Player::Sente), Piece(PieceType::Gold, Player::Sente), Piece(PieceType::Jewel, Player::Sente), Piece(PieceType::Gold, Player::Sente), Piece(PieceType::Silver, Player::Sente), Piece(PieceType::Knight, Player::Sente), Piece(PieceType::Lance, Player::Sente)},
     }};
 }

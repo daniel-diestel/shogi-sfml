@@ -1,13 +1,13 @@
 #include "Move.hpp"
 
-Move::Move(int fromX, int fromY, int toX, int toY, Piece piece, bool promotes)
+Move::Move()
 {
-    m_fromX = fromX;
-    m_fromY = fromY;
-    m_toX = toX;
-    m_toY = toY;
-    m_piece = piece;
-    m_promotes = promotes;
+    m_fromX = -1;
+    m_fromY = -1;
+    m_toX = -1;
+    m_toY = -1;
+    m_piece = Piece();
+    m_promotes = false;
     m_drop = false;
 }
 
@@ -19,6 +19,17 @@ Move::Move(int toX, int toY, Piece piece)
     m_toY = toY;
     m_piece = piece;
     m_promotes = false;
+    m_drop = false;
+}
+
+Move::Move(int fromX, int fromY, int toX, int toY, Piece piece, bool promotes)
+{
+    m_fromX = fromX;
+    m_fromY = fromY;
+    m_toX = toX;
+    m_toY = toY;
+    m_piece = piece;
+    m_promotes = promotes;
     m_drop = false;
 }
 

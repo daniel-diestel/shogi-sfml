@@ -1,5 +1,12 @@
 #include "Game.hpp"
 
+Game::Game()
+{
+    m_current_player = Player::Sente;
+    m_selected_board_coordinates = {-1, -1};
+    m_make_drop = false;
+}
+
 const Board &Game::getBoard()
 {
     return m_board;
@@ -16,7 +23,7 @@ void Game::makeDrop(PieceType type)
     m_selected_drop_type = type;
 }
 
-void Game::handleClickInput(Coordinates clickCoordinates, PieceType type)
+void Game::handleClickInput(Coordinates clickCoordinates)
 {
     if (m_make_drop)
     {
@@ -33,7 +40,7 @@ void Game::handleClickInput(Coordinates clickCoordinates, PieceType type)
                 break;
             }
         }
-        
+
         m_make_drop = false;
     }
     else
