@@ -61,11 +61,12 @@ void Renderer::loadPieceTextures()
     }
 }
 
-void Renderer::draw(sf::RenderWindow &window, const Board &board)
+void Renderer::draw(sf::RenderWindow &window, const Board &board, Coordinates selectedCoords, bool dropSelected, PieceType selectedPieceTye, Player currentPlayer)
 {
     drawBoard(window, board);
     drawPieces(window, board);
     drawHand(window, board);
+    drawAvailableMoves(window, board, selectedCoords, dropSelected, selectedPieceTye, currentPlayer);
 }
 
 void Renderer::drawBoard(sf::RenderWindow &window, const Board &board)
@@ -115,7 +116,8 @@ void Renderer::drawPieces(sf::RenderWindow &window, const Board &board)
     }
 }
 
-void Renderer::drawHand(sf::RenderWindow &window, const Board &board) {
+void Renderer::drawHand(sf::RenderWindow &window, const Board &board)
+{
     sf::CircleShape countCircle;
     countCircle.setRadius(14.f);
     countCircle.setOrigin({14.f, 14.f});
@@ -222,5 +224,70 @@ void Renderer::drawHand(sf::RenderWindow &window, const Board &board) {
         }
 
         indexGote++;
+    }
+}
+
+void Renderer::drawAvailableMoves(sf::RenderWindow &window, const Board &board, Coordinates selectedCoords, bool dropSelected, PieceType selectedPieceType, Player currentPlayer)
+{
+    if (selectedCoords.x == -1 && selectedCoords.y == -1 && !dropSelected)
+    {
+        return;
+    }
+
+    std::vector<Move> legalMoves = MoveGenerator::generateLegalMoves(board, currentPlayer);
+
+    sf::RectangleShape moveIndicator;
+    moveIndicator.setSize({72, 72});
+    moveIndicator.setFillColor(sf::Color(0, 0, 0, 50));
+
+    std::set<std::pair<int, int>> drawnFields;
+
+    if (!dropSelected)
+    {
+        for (const auto &move : legalMoves)
+        {
+            if (move.fromX() == selectedCoords.x && move.fromY() == selectedCoords.y)
+            {
+                std::pair<int, int> targetPos = {move.toX(), move.toY()};
+
+                if (drawnFields.find(targetPos) != drawnFields.end())
+                {
+                    continue;
+                }
+
+                drawnFields.insert(targetPos);
+
+                float posX = move.toX() * TILE_SIZE + BOARD_OFFSET_X;
+                float posY = move.toY() * TILE_SIZE + BOARD_OFFSET_Y;
+
+                moveIndicator.setPosition({posX - 4, posY - 4});
+
+                window.draw(moveIndicator);
+            }
+        }
+    }
+    else
+    {
+        for (const auto &move : legalMoves)
+        {
+            if (move.isDrop() && move.movedPiece().type() == selectedPieceType)
+            {
+                std::pair<int, int> targetPos = {move.toX(), move.toY()};
+
+                if (drawnFields.find(targetPos) != drawnFields.end())
+                {
+                    continue;
+                }
+
+                drawnFields.insert(targetPos);
+
+                float posX = move.toX() * TILE_SIZE + BOARD_OFFSET_X;
+                float posY = move.toY() * TILE_SIZE + BOARD_OFFSET_Y;
+
+                moveIndicator.setPosition({posX - 4, posY - 4});
+
+                window.draw(moveIndicator);
+            }
+        }
     }
 }

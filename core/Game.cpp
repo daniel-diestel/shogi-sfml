@@ -1,4 +1,5 @@
 #include "Game.hpp"
+#include <iostream>
 
 Game::Game()
 {
@@ -12,9 +13,24 @@ const Board &Game::getBoard()
     return m_board;
 }
 
-Player Game::getCurrentPlayer()
+Player Game::getCurrentPlayer() const
 {
     return m_current_player;
+}
+
+Coordinates Game::getSelectedBoardCoordinates() const
+{
+    return m_selected_board_coordinates;
+}
+
+bool Game::getDrop() const
+{
+    return m_make_drop;
+}
+
+PieceType Game::getDropType() const
+{
+    return m_selected_drop_type;
 }
 
 void Game::makeDrop(PieceType type)

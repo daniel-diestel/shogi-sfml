@@ -19,7 +19,7 @@ Move::Move(int toX, int toY, Piece piece)
     m_toY = toY;
     m_piece = piece;
     m_promotes = false;
-    m_drop = false;
+    m_drop = true;
 }
 
 Move::Move(int fromX, int fromY, int toX, int toY, Piece piece, bool promotes)

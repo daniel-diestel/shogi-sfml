@@ -485,12 +485,11 @@ void MoveGenerator::generateDropMoves(const Board &board, Player player, std::ve
 
             if (piece.type() == PieceType::Pawn)
             {
-
                 for (int y = 0; y < 9; y++)
                 {
-                    Piece piece = board.getPiece(x, y);
+                    Piece boardPiece = board.getPiece(x, y);
 
-                    if (piece.owner() == player && piece.type() == PieceType::Pawn && !piece.isPromoted())
+                    if (boardPiece.owner() == player && boardPiece.type() == PieceType::Pawn && !piece.isPromoted())
                     {
                         isPawnInColumn = true;
                         break;

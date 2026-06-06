@@ -9,10 +9,12 @@ class Game {
 
         const Board &getBoard();
 
-        Player getCurrentPlayer();
+        Player getCurrentPlayer() const;
+        Coordinates getSelectedBoardCoordinates() const;
+        bool getDrop() const;
+        PieceType getDropType() const;
 
         void makeDrop(PieceType type);
-
 
         void handleClickInput(Coordinates selectedCoordinates);
 
