@@ -97,3 +97,24 @@ void Game::handleClickInput(Coordinates clickCoordinates)
         }
     }
 }
+
+bool Game::isCheckmate()
+{
+    std::vector<Move> legalMoves = MoveGenerator::generateLegalMoves(m_board, m_current_player);
+
+    if (legalMoves.size() == 0)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+Player Game::getWinner()
+{
+    Player winner_player = (m_current_player == Player::Sente) ? Player::Gote : Player::Sente;
+
+    return winner_player;
+}

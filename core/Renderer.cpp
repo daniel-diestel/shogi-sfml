@@ -5,6 +5,7 @@ Renderer::Renderer()
     loadFont();
     loadBoardTexture();
     loadPieceTextures();
+    loadStateTextures();
 }
 
 void Renderer::loadFont()
@@ -61,12 +62,46 @@ void Renderer::loadPieceTextures()
     }
 }
 
-void Renderer::draw(sf::RenderWindow &window, const Board &board, Coordinates selectedCoords, bool dropSelected, PieceType selectedPieceTye, Player currentPlayer)
+void Renderer::loadStateTextures() 
 {
-    drawBoard(window, board);
-    drawPieces(window, board);
-    drawHand(window, board);
-    drawAvailableMoves(window, board, selectedCoords, dropSelected, selectedPieceTye, currentPlayer);
+    if (!m_menu_texture.loadFromFile("assets/states/Shogi_Menu.png"))
+    {
+        std::cerr << "Fehler: 'assets/states/Shogi_Menu.png' konnte nicht geladen werden!" << std::endl;
+    }
+
+    if (!m_game_over_texture.loadFromFile("assets/states/Shogi_Game_Over.png"))
+    {
+        std::cerr << "Fehler: 'assets/states/Shogi_Game_Over.png' konnte nicht geladen werden!" << std::endl;
+    }
+
+    if (!m_promotion_texture.loadFromFile("assets/states/Shogi_Promotion.png"))
+    {
+        std::cerr << "Fehler: 'assets/states/Shogi_Promotion.png' konnte nicht geladen werden!" << std::endl;
+    }
+}
+
+void Renderer::draw(sf::RenderWindow &window, const Board &board, Coordinates selectedCoords, bool dropSelected, PieceType selectedPieceTye, Player currentPlayer, GameState currentState, Player winner)
+{
+    switch (currentState)
+    {
+    case GameState::StartMenu:
+        drawStartMenuState(window);
+        break;
+
+    case GameState::Playing:
+        drawPlayingState(window, board, selectedCoords, dropSelected, selectedPieceTye, currentPlayer);
+        break;
+    
+    case GameState::PromotionChoice:
+        drawPlayingState(window, board, selectedCoords, dropSelected, selectedPieceTye, currentPlayer);
+        drawPromotionState(window); 
+        break;
+
+    case GameState::GameOver:
+        drawPlayingState(window, board, selectedCoords, dropSelected, selectedPieceTye, currentPlayer);
+        drawGameOverState(window, winner);
+        break;
+    }
 }
 
 void Renderer::drawBoard(sf::RenderWindow &window, const Board &board)
@@ -290,4 +325,98 @@ void Renderer::drawAvailableMoves(sf::RenderWindow &window, const Board &board, 
             }
         }
     }
+}
+
+void Renderer::drawStartMenuState(sf::RenderWindow &window)
+{
+    sf::Sprite menuSprite(m_menu_texture);
+    menuSprite.setPosition({0.f, 0.f});
+
+    window.draw(menuSprite);
+
+    sf::Text blinkText(m_font);
+    blinkText.setString("PRESS 'ENTER' TO START A NEW GAME");
+    blinkText.setCharacterSize(35);
+    blinkText.setFillColor(sf::Color::White);
+
+    sf::FloatRect textBoundBlink = blinkText.getLocalBounds();
+
+    blinkText.setOrigin({textBoundBlink.position.x + textBoundBlink.size.x / 2.0f, textBoundBlink.position.y + textBoundBlink.size.y / 2.0f});
+
+    blinkText.setPosition({WINDOW_WIDTH / 2, 600});
+
+    float elapsedSeconds = m_blink_clock.getElapsedTime().asSeconds();
+
+    float sineWave = std::sin(elapsedSeconds * 5.0f);
+
+    std::uint8_t alpha = static_cast<std::uint8_t>(100.0f + (sineWave + 1.0f) * 77.5f);
+
+    blinkText.setFillColor(sf::Color(255, 255, 255, alpha));
+
+    window.draw(blinkText);
+}
+
+void Renderer::drawPlayingState(sf::RenderWindow &window, const Board &board, Coordinates selectedCoords, bool dropSelected, PieceType selectedPieceTye, Player currentPlayer)
+{
+    drawBoard(window, board);
+    drawPieces(window, board);
+    drawHand(window, board);
+    drawAvailableMoves(window, board, selectedCoords, dropSelected, selectedPieceTye, currentPlayer);
+}
+
+void Renderer::drawPromotionState(sf::RenderWindow &window) 
+{
+    sf::Sprite promotionSprite(m_promotion_texture);
+    promotionSprite.setPosition({0.f, 0.f});
+
+    window.draw(promotionSprite);
+}
+
+void Renderer::drawGameOverState(sf::RenderWindow &window, Player winner)
+{
+    sf::RectangleShape overlay;
+    overlay.setSize({WINDOW_WIDTH, WINDOW_HEIGHT});
+    overlay.setFillColor(sf::Color(0, 0, 0, 170));
+    overlay.setPosition({0.f, 0.f});
+
+    window.draw(overlay);
+
+    sf::Sprite gameOverSprite(m_game_over_texture);
+    gameOverSprite.setPosition({0.f, 0.f});
+
+    window.draw(gameOverSprite);
+
+    sf::Text winnerText(m_font);
+    winnerText.setString(playerToString(winner) + " won!");
+    winnerText.setCharacterSize(35);
+    winnerText.setFillColor(sf::Color::White);
+
+    sf::FloatRect textBoundWinner = winnerText.getLocalBounds();
+
+    winnerText.setOrigin({textBoundWinner.position.x + textBoundWinner.size.x / 2.0f, textBoundWinner.position.y + textBoundWinner.size.y / 2.0f});
+
+    winnerText.setPosition({WINDOW_WIDTH/2, 400});
+
+    window.draw(winnerText);
+
+    sf::Text blinkText(m_font);
+    blinkText.setString("PRESS 'ENTER' TO START A NEW GAME");
+    blinkText.setCharacterSize(35);
+    blinkText.setFillColor(sf::Color::White);
+
+    sf::FloatRect textBoundBlink = blinkText.getLocalBounds();
+
+    blinkText.setOrigin({textBoundBlink.position.x + textBoundBlink.size.x / 2.0f, textBoundBlink.position.y + textBoundBlink.size.y / 2.0f});
+
+    blinkText.setPosition({WINDOW_WIDTH / 2, 600});
+
+    float elapsedSeconds = m_blink_clock.getElapsedTime().asSeconds();
+
+    float sineWave = std::sin(elapsedSeconds * 5.0f);
+
+    std::uint8_t alpha = static_cast<std::uint8_t>(100.0f + (sineWave + 1.0f) * 77.5f);
+
+    blinkText.setFillColor(sf::Color(255, 255, 255, alpha));
+
+    window.draw(blinkText);
 }

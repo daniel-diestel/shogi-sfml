@@ -18,6 +18,10 @@ class Game {
 
         void handleClickInput(Coordinates selectedCoordinates);
 
+        bool isCheckmate();
+
+        Player getWinner();
+
     private:
     Board m_board;
     Player m_current_player;

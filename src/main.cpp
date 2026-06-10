@@ -7,6 +7,7 @@ int main()
 {
     sf::RenderWindow window(sf::VideoMode({WINDOW_WIDTH, WINDOW_HEIGHT}), "Shogi", sf::Style::Titlebar | sf::Style::Close);
 
+    GameState currentState = GameState::StartMenu;
     Renderer renderer;
     Game game;
 
@@ -19,75 +20,100 @@ int main()
                 window.close();
             }
 
+            if (const auto *keyPress = event->getIf<sf::Event::KeyPressed>())
+            {
+                if (keyPress->code == sf::Keyboard::Key::Enter)
+                {
+                    if (currentState == GameState::StartMenu)
+                    {
+                        game = Game();
+                        currentState = GameState::Playing;
+                    }
+                    else if (currentState == GameState::GameOver)
+                    {
+                        game = Game();
+                        currentState = GameState::Playing;
+                    }
+                }
+            }
+
             if (const auto *mouseClick = event->getIf<sf::Event::MouseButtonPressed>())
             {
-                float mouseX = static_cast<float>(mouseClick->position.x);
-                float mouseY = static_cast<float>(mouseClick->position.y);
-
-                int boardX = static_cast<int>(std::floor((mouseX - BOARD_OFFSET_MOUSE_X) / (TILE_SIZE)));
-                int boardY = static_cast<int>(std::floor((mouseY - BOARD_OFFSET_MOUSE_Y) / (TILE_SIZE)));
-
-                if (boardX >= 0 && boardX < 9 && boardY >= 0 && boardY < 9)
+                if (currentState == GameState::Playing)
                 {
-                    Coordinates clickedCoords{boardX, boardY};
+                    float mouseX = static_cast<float>(mouseClick->position.x);
+                    float mouseY = static_cast<float>(mouseClick->position.y);
 
-                    game.handleClickInput(clickedCoords);
-                }
-                else
-                {
-                    Player currentPlayer = game.getCurrentPlayer();
-                    const Board &board = game.getBoard();
+                    int boardX = static_cast<int>(std::floor((mouseX - BOARD_OFFSET_MOUSE_X) / (TILE_SIZE)));
+                    int boardY = static_cast<int>(std::floor((mouseY - BOARD_OFFSET_MOUSE_Y) / (TILE_SIZE)));
 
-                    if (currentPlayer == Player::Sente)
+                    if (boardX >= 0 && boardX < 9 && boardY >= 0 && boardY < 9)
                     {
-                        std::map<PieceType, int> senteCounts;
+                        Coordinates clickedCoords{boardX, boardY};
 
-                        for (const auto &piece : board.getHand(Player::Sente))
+                        game.handleClickInput(clickedCoords);
+                    }
+                    else
+                    {
+                        Player currentPlayer = game.getCurrentPlayer();
+                        const Board &board = game.getBoard();
+
+                        if (currentPlayer == Player::Sente)
                         {
-                            senteCounts[piece.type()]++;
-                        }
+                            std::map<PieceType, int> senteCounts;
 
-                        int indexSente = 0;
-
-                        for (const auto &[type, count] : senteCounts)
-                        {
-                            float posX = 805.f;
-                            float posY = 624.f - (indexSente * TILE_SIZE);
-
-                            if (mouseX >= posX && mouseX <= posX + PIECE_SIZE &&
-                                mouseY >= posY && mouseY <= posY + PIECE_SIZE)
+                            for (const auto &piece : board.getHand(Player::Sente))
                             {
-                                game.makeDrop(type);
-                                break;
+                                senteCounts[piece.type()]++;
                             }
 
-                            indexSente++;
+                            int indexSente = 0;
+
+                            for (const auto &[type, count] : senteCounts)
+                            {
+                                float posX = 805.f;
+                                float posY = 624.f - (indexSente * TILE_SIZE);
+
+                                if (mouseX >= posX && mouseX <= posX + PIECE_SIZE &&
+                                    mouseY >= posY && mouseY <= posY + PIECE_SIZE)
+                                {
+                                    game.makeDrop(type);
+                                    break;
+                                }
+
+                                indexSente++;
+                            }
+                        }
+                        else if (currentPlayer == Player::Gote)
+                        {
+                            std::map<PieceType, int> goteCounts;
+
+                            for (const auto &piece : board.getHand(Player::Gote))
+                            {
+                                goteCounts[piece.type()]++;
+                            }
+
+                            int indexGote = 0;
+                            for (const auto &[type, count] : goteCounts)
+                            {
+                                float posX = 15.f;
+                                float posY = 8.f - (indexGote * (TILE_SIZE * -1));
+
+                                if (mouseX >= posX && mouseX <= posX + PIECE_SIZE &&
+                                    mouseY >= posY && mouseY <= posY + PIECE_SIZE)
+                                {
+                                    game.makeDrop(type);
+                                    break;
+                                }
+
+                                indexGote++;
+                            }
                         }
                     }
-                    else if (currentPlayer == Player::Gote)
+
+                    if (game.isCheckmate())
                     {
-                        std::map<PieceType, int> goteCounts;
-
-                        for (const auto &piece : board.getHand(Player::Gote))
-                        {
-                            goteCounts[piece.type()]++;
-                        }
-
-                        int indexGote = 0;
-                        for (const auto &[type, count] : goteCounts)
-                        {
-                            float posX = 15.f;
-                            float posY = 8.f - (indexGote * (TILE_SIZE * -1));
-
-                            if (mouseX >= posX && mouseX <= posX + PIECE_SIZE &&
-                                mouseY >= posY && mouseY <= posY + PIECE_SIZE)
-                            {
-                                game.makeDrop(type);
-                                break;
-                            }
-
-                            indexGote++;
-                        }
+                        currentState = GameState::GameOver;
                     }
                 }
             }
@@ -95,8 +121,8 @@ int main()
 
         window.clear(sf::Color(82, 62, 47));
 
-        renderer.draw(window, game.getBoard(), game.getSelectedBoardCoordinates(), game.getDrop(), game.getDropType(), game.getCurrentPlayer());
-
+        renderer.draw(window, game.getBoard(), game.getSelectedBoardCoordinates(), game.getDrop(), game.getDropType(), game.getCurrentPlayer(), currentState, game.getWinner());
+        
         window.display();
     }
 }

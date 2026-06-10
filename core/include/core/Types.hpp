@@ -1,9 +1,24 @@
+#include <string>
+
 enum Player
 {
-    Sente, // First
-    Gote,   // Second
+    Sente,
+    Gote,
     None
 };
+
+inline std::string playerToString(Player player)
+{
+    switch (player)
+    {
+    case Player::Sente:
+        return "Sente";
+    case Player::Gote:
+        return "Gote";
+    default:
+        return "None";
+    }
+}
 
 enum PieceType
 {
@@ -29,4 +44,12 @@ struct Coordinates
 {
     int x;
     int y;
+};
+
+enum class GameState
+{
+    StartMenu,
+    Playing,
+    GameOver,
+    PromotionChoice
 };
