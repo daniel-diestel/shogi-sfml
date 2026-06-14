@@ -39,7 +39,7 @@ void Game::makeDrop(PieceType type)
     m_selected_drop_type = type;
 }
 
-void Game::handleClickInput(Coordinates clickCoordinates)
+bool Game::handleClickInput(Coordinates clickCoordinates)
 {
     if (m_make_drop)
     {
@@ -76,26 +76,70 @@ void Game::handleClickInput(Coordinates clickCoordinates)
             {
                 m_selected_board_coordinates = {-1, -1};
 
-                return;
+                return false;
             }
 
             std::vector<Move> legalMoves = MoveGenerator::generateLegalMoves(m_board, m_current_player);
+            std::vector<Move> promotionOption;
 
             for (auto &move : legalMoves)
             {
                 if (move.fromX() == m_selected_board_coordinates.x && move.fromY() == m_selected_board_coordinates.y && move.toX() == clickCoordinates.x && move.toY() == clickCoordinates.y)
                 {
-                    m_board.makeMove(move);
-
-                    m_current_player = (m_current_player == Player::Sente) ? Player::Gote : Player::Sente;
-
-                    break;
+                    promotionOption.push_back(move);
                 }
+            }
+
+            if(promotionOption.size() == 2) 
+            {
+                for (const auto &move : promotionOption)
+                {
+                    if (move.doesPromote()) 
+                    {
+                        m_promotion_move = move;
+                    }
+                    else 
+                    {
+                        m_normal_move = move;
+                    }
+                }
+
+                m_selected_board_coordinates = {-1, -1};
+
+                return true;
+            }
+            else if (!promotionOption.empty())
+            {
+                m_board.makeMove(promotionOption[0]);
+
+                m_current_player = (m_current_player == Player::Sente) ? Player::Gote : Player::Sente;
+            }
+            else
+            {
+                m_selected_board_coordinates = {-1, -1};
+                
+                return false;
             }
 
             m_selected_board_coordinates = {-1, -1};
         }
     }
+
+    return false;
+}
+
+void Game::executeNormalMove() 
+{
+    m_board.makeMove(m_normal_move);
+
+    m_current_player = (m_current_player == Player::Sente) ? Player::Gote : Player::Sente;
+}
+
+void Game::executePromotionMove()
+{
+    m_board.makeMove(m_promotion_move);
+
+    m_current_player = (m_current_player == Player::Sente) ? Player::Gote : Player::Sente;
 }
 
 bool Game::isCheckmate()

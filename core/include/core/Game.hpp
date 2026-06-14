@@ -16,19 +16,23 @@ class Game {
 
         void makeDrop(PieceType type);
 
-        void handleClickInput(Coordinates selectedCoordinates);
+        bool handleClickInput(Coordinates selectedCoordinates);
 
         bool isCheckmate();
 
         Player getWinner();
 
-    private:
-    Board m_board;
-    Player m_current_player;
+        void executeNormalMove();
+        void executePromotionMove();
 
-    bool m_make_drop;
+    private : Board m_board;
+        Player m_current_player;
+        Move m_normal_move;
+        Move m_promotion_move;
 
-    PieceType m_selected_drop_type;
+        bool m_make_drop;
 
-    Coordinates m_selected_board_coordinates;
+        PieceType m_selected_drop_type;
+
+        Coordinates m_selected_board_coordinates;
 };
