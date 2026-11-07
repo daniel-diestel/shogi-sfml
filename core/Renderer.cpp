@@ -1,4 +1,5 @@
 #include "Renderer.hpp"
+#include "ResourcePath.hpp"
 
 Renderer::Renderer()
 {
@@ -10,7 +11,7 @@ Renderer::Renderer()
 
 void Renderer::loadFont()
 {
-    if (!m_font.openFromFile("assets/font/PixeloidSans.ttf"))
+    if (!m_font.openFromFile(resourcePath("assets/font/PixeloidSans.ttf")))
     {
         std::cerr << "Fehler: 'assets/font/PixeloidSans.ttf' konnte nicht geladen werden!" << std::endl;
     }
@@ -18,7 +19,7 @@ void Renderer::loadFont()
 
 void Renderer::loadBoardTexture()
 {
-    if (!m_board_texture.loadFromFile("assets/board/Shogi_Board64.png"))
+    if (!m_board_texture.loadFromFile(resourcePath("assets/board/Shogi_Board64.png")))
     {
         std::cerr << "Fehler: 'assets/board/board.png' konnte nicht geladen werden!" << std::endl;
     }
@@ -55,7 +56,7 @@ void Renderer::loadPieceTextures()
         const auto &key = piece.first;
         const std::string &path = piece.second;
 
-        if (!m_pieceTextures[key].loadFromFile(path))
+        if (!m_pieceTextures[key].loadFromFile(resourcePath(path)))
         {
             std::cerr << "[Renderer] Fehler: Konnte Textur aus SVG-Bitmap nicht erstellen für: " << path << std::endl;
         }
@@ -64,17 +65,17 @@ void Renderer::loadPieceTextures()
 
 void Renderer::loadStateTextures() 
 {
-    if (!m_menu_texture.loadFromFile("assets/states/Shogi_Menu.png"))
+    if (!m_menu_texture.loadFromFile(resourcePath("assets/states/Shogi_Menu.png")))
     {
         std::cerr << "Fehler: 'assets/states/Shogi_Menu.png' konnte nicht geladen werden!" << std::endl;
     }
 
-    if (!m_game_over_texture.loadFromFile("assets/states/Shogi_Game_Over.png"))
+    if (!m_game_over_texture.loadFromFile(resourcePath("assets/states/Shogi_Game_Over.png")))
     {
         std::cerr << "Fehler: 'assets/states/Shogi_Game_Over.png' konnte nicht geladen werden!" << std::endl;
     }
 
-    if (!m_promotion_texture.loadFromFile("assets/states/Shogi_Promotion.png"))
+    if (!m_promotion_texture.loadFromFile(resourcePath("assets/states/Shogi_Promotion.png")))
     {
         std::cerr << "Fehler: 'assets/states/Shogi_Promotion.png' konnte nicht geladen werden!" << std::endl;
     }

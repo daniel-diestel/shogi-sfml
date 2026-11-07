@@ -1,3 +1,4 @@
+#include "ResourcePath.hpp"
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 #include <cmath>
@@ -10,7 +11,8 @@ int main()
 
     sf::Music backgroundMusic;
 
-    if (!backgroundMusic.openFromFile("assets/audio/Shogi_BGM.ogg"))
+    if (!backgroundMusic.openFromFile(
+            resourcePath("assets/audio/Shogi_BGM.ogg")))
     {
         std::cerr << "Fehler: Musikdatei konnte nicht geladen werden!\n";
     }
