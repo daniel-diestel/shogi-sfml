@@ -29,7 +29,7 @@ cd shogi-sfml
 mkdir build && cd build
 cmake ..
 make
-./shogi-sfml
+./shogi
 ```
 
 ## License
